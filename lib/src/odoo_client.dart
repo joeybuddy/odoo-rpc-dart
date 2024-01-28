@@ -153,7 +153,7 @@ class OdooClient {
           _setSessionId(cookie.value, auth: auth);
         }
       } catch (e) {
-        throw OdooException(e.toString());
+        throw OdooAuthenticationException();
       }
     }
   }
@@ -199,8 +199,7 @@ class OdooClient {
           throw OdooSessionExpiredException(err);
         } else {
           // Other error
-          final err = result['error'].toString();
-          throw OdooException(err);
+          throw OdooException(result['error']);
         }
       }
 
@@ -247,14 +246,13 @@ class OdooClient {
           throw OdooSessionExpiredException(err);
         } else {
           // Other error
-          final err = result['error'].toString();
-          throw OdooException(err);
+          throw OdooException(result['error']);
         }
       }
       // Odoo 11 sets uid to False on failed login without any error message
       if (result['result'].containsKey('uid')) {
         if (result['result']['uid'] is bool) {
-          throw OdooException('Authentication failed');
+          throw OdooAuthenticationException();
         }
       }
 
